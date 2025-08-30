@@ -27,7 +27,7 @@ Cally is a **powerful yet simple expense tracking app** built with React Native 
 ## 📱 Download Now
 
 <div align="center">
-  <a href="./cally.apk" download>
+  <a href="https://api.dipkumarpal.me/public/download/cally.apk" download>
     <img src="https://img.shields.io/badge/Download-Android%20APK-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK" />
   </a>
 </div>
