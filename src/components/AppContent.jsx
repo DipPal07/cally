@@ -29,6 +29,8 @@ export const AppContent = () => {
     new Date().toISOString().substring(0, 7), // YYYY-MM format
   );
   const [modalVisible, setModalVisible] = useState(false);
+  const [dateActionModalVisible, setDateActionModalVisible] = useState(false);
+  const [showExpenses, setShowExpenses] = useState(true);
   const [devInfoVisible, setDevInfoVisible] = useState(false);
   const [expenseAmount, setExpenseAmount] = useState('');
   const [expenseDescription, setExpenseDescription] = useState('');
@@ -52,7 +54,7 @@ export const AppContent = () => {
 
   const handleDatePress = useCallback(day => {
     setSelectedDate(day.dateString);
-    setModalVisible(true);
+    setDateActionModalVisible(true);
   }, []);
 
   const handleMonthChange = useCallback(month => {
@@ -96,6 +98,7 @@ export const AppContent = () => {
     setModalVisible(false);
     setExpenseAmount('');
     setExpenseDescription('');
+    setShowExpenses(true);
   };
 
   const selectedDateExpenses = expenses[selectedDate] || [];
@@ -141,10 +144,12 @@ export const AppContent = () => {
           selectedDateTotal={selectedDateTotal}
         />
 
-        <ExpensesList
-          expenses={selectedDateExpenses}
-          onDeleteExpense={handleDeleteExpense}
-        />
+        {showExpenses && (
+          <ExpensesList
+            expenses={selectedDateExpenses}
+            onDeleteExpense={handleDeleteExpense}
+          />
+        )}
 
         <AddExpenseModal
           visible={modalVisible}
@@ -156,6 +161,100 @@ export const AppContent = () => {
           onAddExpense={handleAddExpense}
           onCancel={handleModalCancel}
         />
+
+        {/* Date Action Modal */}
+        {dateActionModalVisible && (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 999,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: colors.surface,
+                padding: 24,
+                borderRadius: 16,
+                minWidth: 250,
+                alignItems: 'center',
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  marginBottom: 18,
+                  color: colors.onSurface,
+                }}
+              >
+                What would you like to do?
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                }}
+              >
+                <View style={{ flex: 1, marginRight: 8 }}>
+                  <Text
+                    style={{
+                      backgroundColor: colors.primary,
+                      color: '#fff',
+                      textAlign: 'center',
+                      paddingVertical: 12,
+                      borderRadius: 8,
+                      fontWeight: 'bold',
+                    }}
+                    onPress={() => {
+                      setShowExpenses(true);
+                      setModalVisible(false);
+                      setDateActionModalVisible(false);
+                    }}
+                  >
+                    View Expenses
+                  </Text>
+                </View>
+                <View style={{ flex: 1, marginLeft: 8 }}>
+                  <Text
+                    style={{
+                      backgroundColor: colors.secondary,
+                      color: '#fff',
+                      textAlign: 'center',
+                      paddingVertical: 12,
+                      borderRadius: 8,
+                      fontWeight: 'bold',
+                    }}
+                    onPress={() => {
+                      setShowExpenses(false);
+                      setModalVisible(true);
+                      setDateActionModalVisible(false);
+                    }}
+                  >
+                    Add Expense
+                  </Text>
+                </View>
+              </View>
+              <Text
+                style={{
+                  marginTop: 18,
+                  color: colors.onSurfaceVariant,
+                  textAlign: 'center',
+                }}
+                onPress={() => setDateActionModalVisible(false)}
+              >
+                Cancel
+              </Text>
+            </View>
+          </View>
+        )}
 
         <DeveloperInfoModal
           visible={devInfoVisible}

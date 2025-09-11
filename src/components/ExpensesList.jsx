@@ -1,9 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors } from '../theme/colors';
 import { formatCurrency } from '../utils/helpers';
+import { CustomAlertModal } from './CustomAlertModal';
 
 export const ExpensesList = ({ expenses, onDeleteExpense }) => {
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
+
+  const handleDelete = id => {
+    setPendingDeleteId(id);
+    setAlertVisible(true);
+  };
+
+  const confirmDelete = () => {
+    if (pendingDeleteId) {
+      onDeleteExpense(pendingDeleteId);
+      setPendingDeleteId(null);
+      setAlertVisible(false);
+    }
+  };
+
+  const cancelDelete = () => {
+    setPendingDeleteId(null);
+    setAlertVisible(false);
+  };
   return (
     <View
       style={[
@@ -50,7 +71,7 @@ export const ExpensesList = ({ expenses, onDeleteExpense }) => {
               </View>
               <TouchableOpacity
                 style={[styles.deleteButton, { backgroundColor: colors.error }]}
-                onPress={() => onDeleteExpense(item.id)}
+                onPress={() => handleDelete(item.id)}
               >
                 <Text style={styles.deleteButtonText}>×</Text>
               </TouchableOpacity>
@@ -64,6 +85,13 @@ export const ExpensesList = ({ expenses, onDeleteExpense }) => {
           No expenses recorded for this date
         </Text>
       )}
+      <CustomAlertModal
+        visible={alertVisible}
+        title="Delete Expense"
+        message="Are you sure you want to delete this expense?"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+      />
     </View>
   );
 };
